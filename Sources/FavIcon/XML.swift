@@ -33,8 +33,12 @@ final class XMLDocument {
         
         guard data.count > 0 else { return }
         
-        _document = data.withUnsafeBytes { (p: UnsafePointer<Int8>) -> htmlDocPtr in
-            return xmlReadMemory(p, Int32(data.count), nil, nil, 0)
+        _document = data.withUnsafeBytes { (p: UnsafePointer<Int8>) -> xmlDocPtr? in
+            // Enabled xml parser options
+            // XML_PARSE_RECOVER = 1 : recover on errors
+            // XML_PARSE_NOERROR = 32 : suppress error reports
+            // XML_PARSE_NOWARNING = 64 : suppress warning reports
+            return xmlReadMemory(p, Int32(data.count), nil, nil, 0b01100001)
         }
     }
 
